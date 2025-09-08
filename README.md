@@ -2,7 +2,7 @@
 
 A minimal showcase integrating **Next.js (App Router)**, **Stripe Checkout**, and a **Stripe Webhook → Firebase Firestore** write.
 
-## ✨ What we built
+## ✨ What I built
 - **Stripe Checkout (Test Mode)** with a product price (CAD 9.90)
 - **API Route** `/api/checkout` that creates a Checkout Session
 - **Webhook** `/api/webhook` (Node runtime) that verifies signature and writes to **Firestore** (`payments` collection)
