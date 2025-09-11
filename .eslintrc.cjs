@@ -1,11 +1,7 @@
-// .eslintrc.cjs
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module"
-  },
+  parserOptions: { ecmaVersion: 2020, sourceType: "module" },
   plugins: ["@typescript-eslint", "import", "promise"],
   extends: [
     "next/core-web-vitals",
@@ -15,7 +11,6 @@ module.exports = {
     "prettier"
   ],
   rules: {
-    // Genel
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
@@ -24,7 +19,6 @@ module.exports = {
   },
   ignorePatterns: ["node_modules", ".next", "out"],
   overrides: [
-    // ✅ API: hızlı geliştirme için any uyarısını kapat
     {
       files: ["src/app/api/**/*.{ts,tsx}"],
       rules: {
@@ -35,12 +29,9 @@ module.exports = {
         ]
       }
     },
-    // ✅ UI: <img> uyarısı kırmasın (zaten next/image'a geçtik)
     {
       files: ["src/components/**/*.{ts,tsx}"],
-      rules: {
-        "@next/next/no-img-element": "warn"
-      }
+      rules: { "@next/next/no-img-element": "warn" }
     }
   ]
 };

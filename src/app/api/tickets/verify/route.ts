@@ -27,7 +27,9 @@ export async function GET(req: NextRequest) {
   }
 
   const t = snap.data() as Ticket | undefined;
-  if (!t) return NextResponse.json({ ok: false, error: "Malformed ticket data" }, { status: 500 });
+  if (!t) {
+    return NextResponse.json({ ok: false, error: "Malformed ticket data" }, { status: 500 });
+  }
 
   if (t.secret !== secret) {
     return NextResponse.json({ ok: false, error: "Secret mismatch" }, { status: 403 });
@@ -36,5 +38,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Already used" }, { status: 409 });
   }
 
-  return NextResponse.json({ ok: true, id, secret, eventId: t.eventId, status: t.status });
+  return NextResponse.json({
+    ok: true,
+    id,
+    secret,
+    eventId: t.eventId,
+    status: t.status,
+  });
 }
