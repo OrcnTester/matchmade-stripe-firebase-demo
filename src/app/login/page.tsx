@@ -28,10 +28,27 @@ export default function Login() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, width: 280, margin: "40px auto" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        width: 280,
+        margin: "40px auto",
+      }}
+    >
       <h1>Login</h1>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input placeholder="Password" type="password" value={pass} onChange={e => setPass(e.target.value)} />
+      <input
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        placeholder="Password"
+        type="password"
+        value={pass}
+        onChange={(e) => setPass(e.target.value)}
+      />
       <button onClick={loginWithEmail}>Login with Email</button>
       <button onClick={loginWithGoogle}>Login with Google</button>
     </div>

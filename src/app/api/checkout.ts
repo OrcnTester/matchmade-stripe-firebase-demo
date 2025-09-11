@@ -1,9 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") return res.status(405).end();
 
   const session = await stripe.checkout.sessions.create({
@@ -20,4 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   res.status(200).json({ id: session.id });
+  
+  return NextResponse.redirect(session.url!, { status: 303 });  
 }

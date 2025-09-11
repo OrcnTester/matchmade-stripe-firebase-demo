@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Admin allowlist
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          "orcnyoruk@gmail.com"
+          // gerekirse diğer adminler buraya
+        ];
+    }
+
+    // ---- EVENTS (public browse + admin CRUD)
+    match /events/{id} {
+      // Public: sadece published’lar listelenir/görüntülenir
+      allow read: if resource.data.status == "published" || isAdmin();
+      // Admin: oluşturma, güncelleme, silme
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ---- PAYMENTS (sadece admin; client write yok)
+    match /payments/{id} {
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin(); // webhook admin SDK ile yazıyor > ok
+    }
+
+    // ---- TICKETS
+    match /tickets/{id} {
+      // Sahibi kendi biletini okuyabilsin (opsiyonel; QR checker’a gerek yoksa kaldırılabilir)
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId || isAdmin();
+
+      // Check-in ve diğer yazma işlemleri: sadece admin
+      // (Webhook/Server Admin SDK da admin kapsamında yazabildiği için sorun yok)
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

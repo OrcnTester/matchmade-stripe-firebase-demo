@@ -1,0 +1,18 @@
+[
+{
+"id": "coffee-social-1",
+"title": "Café Social Night",
+"date": "2025-10-15T18:30:00Z",
+"location": "Toronto - Queen St. West",
+"priceCents": 990,
+"description": "Ice-breakers, mini games, curated matchmaking."
+},
+{
+"id": "brunch-match-1",
+"title": "Sunday Brunch Match",
+"date": "2025-10-19T11:00:00Z",
+"location": "Toronto - Kensington Market",
+"priceCents": 1490,
+"description": "Brunch & compatibility Q&A."
+}
+]

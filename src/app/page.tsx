@@ -1,55 +1,49 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import PublicEventsList from "@/components/PublicEventsList";
 
-import { loadStripe } from "@stripe/stripe-js";
-import { useState, useEffect } from "react";
+export const dynamic = "force-dynamic";
 
-export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const [pub, setPub] = useState<string | undefined>(undefined);
+export default function HomePage() {
+  const sp = useSearchParams();
+  const r = useRouter();
 
   useEffect(() => {
-    setPub(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-    console.log("PUB KEY:", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-  }, []);
+    (async () => {
+      if (sp.get("success") === "1" && sp.get("event")) {
+        const user = auth.currentUser;
+        if (!user) return; // login gerek
+        const eventId = sp.get("event")!;
+        const secret = crypto.randomUUID();
 
-  const handleCheckout = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/api/checkout", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Checkout error");
+        const ref = await addDoc(collection(db, "tickets"), {
+          eventId,
+          userId: user.uid,
+          secret,
+          status: "valid",
+          createdAt: Date.now(),
+        });
 
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-      await stripe?.redirectToCheckout({ sessionId: data.id });
-    } catch (e) {
-      alert((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
+        // temiz URL'e git (bilet sayfası)
+        r.replace(`/ticket/${ref.id}`);
+      }
+    })();
+  }, [sp, r]);
 
+  // ... senin mevcut home içeriğin ...
   return (
-    <main className="min-h-screen grid place-items-center p-8">
-      <div className="max-w-xl w-full space-y-6 text-center">
-        <h1 className="text-3xl font-bold">MatchMade — Stripe Test</h1>
-        <p className="opacity-80">
-          Test kartı: <code>4242 4242 4242 4242</code> • Gelecek tarih • CVC 123 • Postcode 12345
-        </p>
-
-        <button
-          onClick={handleCheckout}
-          disabled={loading || !pub}
-          className="px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          {loading ? "Yönlendiriliyor..." : "MatchMade Ticket Satın Al (9.90 CAD)"}
-        </button>
-
-        {!pub && (
-          <p className="text-sm text-red-500">
-            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY bulunamadı. .env.local ve restart kontrol et.
-          </p>
-        )}
+    <div className="space-y-8">
+       <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">Welcome to MatchMade</h1>
+      <div>
+        <h2 className="text-lg font-medium mb-2">Upcoming Events</h2>
+        <PublicEventsList />
       </div>
-    </main>
+    </div>
+    </div>
   );
 }

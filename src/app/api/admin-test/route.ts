@@ -1,5 +1,4 @@
 // src/app/api/admin-test/route.ts  (ve webhook/route.ts aynı)
-import { NextRequest } from "next/server";
 import * as admin from "firebase-admin";
 
 export const runtime = "nodejs";
@@ -21,16 +20,26 @@ function getServiceAccount(): admin.ServiceAccount {
     }
     // 4) Artık JSON parse güvenli
     const parsed = JSON.parse(decoded);
-    if (typeof parsed.client_email !== "string" || typeof parsed.private_key !== "string") {
-      throw new Error("Service account JSON missing 'client_email' or 'private_key'");
+    if (
+      typeof parsed.client_email !== "string" ||
+      typeof parsed.private_key !== "string"
+    ) {
+      throw new Error(
+        "Service account JSON missing 'client_email' or 'private_key'",
+      );
     }
     return parsed;
   }
 
   if (json) {
     const parsed = JSON.parse(json);
-    if (typeof parsed.client_email !== "string" || typeof parsed.private_key !== "string") {
-      throw new Error("Service account JSON missing 'client_email' or 'private_key'");
+    if (
+      typeof parsed.client_email !== "string" ||
+      typeof parsed.private_key !== "string"
+    ) {
+      throw new Error(
+        "Service account JSON missing 'client_email' or 'private_key'",
+      );
     }
     return parsed;
   }
@@ -39,18 +48,13 @@ function getServiceAccount(): admin.ServiceAccount {
 }
 
 if (!admin.apps.length) {
-  admin.initializeApp({ credential: admin.credential.cert(getServiceAccount()) });
+  admin.initializeApp({
+    credential: admin.credential.cert(getServiceAccount()),
+  });
 }
-const db = admin.firestore();
 
-export async function GET(_req: NextRequest) {
-  const id = `test_${Date.now()}`;
-  await db.collection("payments").doc(id).set({
-    ping: "pong",
-    created_at: admin.firestore.FieldValue.serverTimestamp(),
-  });
-  return new Response(JSON.stringify({ ok: true, id }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_req: Request) {
+  return new Response("ok");
 }
+
