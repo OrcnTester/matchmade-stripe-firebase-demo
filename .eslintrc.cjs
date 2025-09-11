@@ -15,33 +15,30 @@ module.exports = {
     "prettier"
   ],
   rules: {
+    // Genel
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
-      {
-        "argsIgnorePattern": "^_",   // ✅ Alt çizgi ile başlayan parametreler YOK SAYILACAK
-        "varsIgnorePattern": "^_"    // ✅ Kullanılmayan değişkenlerde de geçerli
-      }
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
     ]
   },
-  ignorePatterns: ["node_modules", ".next", "out"]
-overrides: [
+  ignorePatterns: ["node_modules", ".next", "out"],
+  overrides: [
+    // ✅ API: hızlı geliştirme için any uyarısını kapat
     {
       files: ["src/app/api/**/*.{ts,tsx}"],
       rules: {
-        // ✅ API tarafında hızlı ilerleyelim (server-only)
         "@typescript-eslint/no-explicit-any": "off",
-        // kullanılmayan değişkeni _ ile başlatınca sustur
         "@typescript-eslint/no-unused-vars": [
           "warn",
-          { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+          { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
         ]
       }
     },
+    // ✅ UI: <img> uyarısı kırmasın (zaten next/image'a geçtik)
     {
       files: ["src/components/**/*.{ts,tsx}"],
       rules: {
-        // img uyarısını warning yap (build’i kırmasın)
         "@next/next/no-img-element": "warn"
       }
     }
