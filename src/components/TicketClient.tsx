@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// Tipleri yoksa dert etmeyelim, QR default export
+import Image from "next/image";
 import * as QR from "qrcode";
 
 export default function TicketClient({ id }: { id: string }) {
@@ -27,13 +27,16 @@ export default function TicketClient({ id }: { id: string }) {
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Your Ticket</h1>
       {dataUrl ? (
-        <img
-          src={dataUrl}
-          alt="Ticket QR"
-          className="mx-auto border rounded p-3 bg-white"
-          width={256}
-          height={256}
-        />
+        <div className="flex justify-center">
+          <Image
+            src={dataUrl}
+            alt="Ticket QR"
+            width={256}
+            height={256}
+            className="border rounded p-3 bg-white"
+            priority
+          />
+        </div>
       ) : (
         <div className="text-sm text-gray-600">Generating QR…</div>
       )}
