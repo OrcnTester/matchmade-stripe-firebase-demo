@@ -1,7 +1,7 @@
 // src/app/api/stripe/webhook/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { adb } from "@/lib/firebaseAdmin";
 import { Timestamp } from "firebase-admin/firestore";
 
 export const runtime = "nodejs";
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   const eventId = s.metadata?.eventId ?? "unknown";
 
   // 1) payments (zaten var diye bırakıyorum)
-  await adminDb.collection("payments").add({
+  await adb.collection("payments").add({
     sessionId: s.id,
     paymentStatus: s.payment_status,
     amountTotal: s.amount_total,
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   });
 
   // 2) tickets (YENİ — admin scanner bununla doğrulayacak)
-  await adminDb.collection("tickets").doc(ticketId).set({
+  await adb.collection("tickets").doc(ticketId).set({
     ticketId,
     eventId,
     amountTotal: s.amount_total,
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
       const priceCents = Number(s.metadata?.priceCents ?? "0");
 
       // Firestore’a ödeme kaydı
-      await adminDb.collection("payments").add({
+      await adb.collection("payments").add({
         sessionId: s.id,
         paymentStatus: s.payment_status,
         amountTotal: s.amount_total,
